@@ -11,8 +11,9 @@ const app = express();
 
 
 const allowedOrigins = [
-  "http://localhost:5173",                  
-  "https://betting-card-app.vercel.app"   
+  "http://localhost:5173", 
+  "https://betting-card-app-git-main-darshan-ns-projects.vercel.app"                 
+  
 ];
 
 app.use(
