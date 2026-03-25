@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const BASE_URL =
+  import.meta.env.MODE === "production"
+    ? import.meta.env.VITE_API_URL   // Production (Render)
+    : "http://localhost:5000/api";  // Local
+
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: BASE_URL,
   timeout: 10000,
 });
 
@@ -18,11 +23,12 @@ API.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login"; 
+      window.location.href = "/";
     }
     return Promise.reject(error);
   }
 );
+
 
 export const authAPI = {
   signup: (data) => API.post("/auth/signup", data),
@@ -30,7 +36,7 @@ export const authAPI = {
   me: () => API.get("/auth/me"),
   logout: () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/";
   },
 };
 
@@ -40,9 +46,7 @@ export const walletAPI = {
 
 export const gameAPI = {
   create: (betAmount) => API.post("/game", { betAmount }),
-  
-  current: () => API.get("/game/current"), 
-  
+  current: () => API.get("/game/current"),
   match: (gameId, cardId1, cardId2) =>
     API.put(`/game/${gameId}/match`, { cardId1, cardId2 }),
 };
