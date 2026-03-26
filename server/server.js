@@ -11,10 +11,26 @@ const app = express();
 
 
 const allowedOrigins = [
-  "http://localhost:5173", 
-  "https://betting-card-app-git-main-darshan-ns-projects.vercel.app"                 
-  
+  "http://localhost:5173",
 ];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.includes("vercel.app")
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS not allowed: " + origin));
+    },
+    credentials: true,
+  })
+);
 
 app.use(
   cors({
@@ -76,5 +92,5 @@ const createAdmin = async () => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`📡 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
