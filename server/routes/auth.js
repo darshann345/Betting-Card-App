@@ -21,7 +21,7 @@ router.post("/signup", async (req, res) => {
     const user = new User({
       username,
       password: hashedPassword,
-      balance: 1000, 
+      balance: 1000,
       totalDeposited: 0,
       gamesPlayed: 0,
       gamesWon: 0,
@@ -54,9 +54,12 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: "Username and password required" });
+    }
 
     const user = await User.findOne({ username });
-    if (!user) {
+    if (!user || !user.password) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
@@ -65,9 +68,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
       token,
@@ -83,8 +84,8 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login Error:", error.message);
-    res.status(500).json({ error: "Server error during login" });
+    console.error("Login Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
