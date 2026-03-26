@@ -1,137 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { walletAPI, authAPI } from '../services/api';
-
-const styles = {
-    container: {
-        maxWidth: '500px',
-        margin: '0 auto 2rem',
-        background: '#ffffff',
-        padding: '2rem',
-        borderRadius: '30px',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
-    },
-    header: {
-        textAlign: 'center',
-        marginBottom: '1.5rem',
-        color: '#1a202c',
-    },
-    balanceCard: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '2rem',
-        borderRadius: '24px',
-        color: '#fff',
-        textAlign: 'center',
-        marginBottom: '2rem',
-        boxShadow: '0 10px 20px rgba(102, 126, 234, 0.3)',
-    },
-    balanceLabel: {
-        fontSize: '0.9rem',
-        opacity: 0.9,
-        textTransform: 'uppercase',
-        letterSpacing: '1px',
-    },
-    balanceAmount: {
-        fontSize: '3rem',
-        fontWeight: '800',
-        margin: '0.5rem 0',
-    },
-    statsGrid: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '1rem',
-        marginBottom: '2rem',
-    },
-    statBox: {
-        background: '#f8fafc',
-        padding: '1.2rem',
-        borderRadius: '18px',
-        textAlign: 'center',
-        border: '1px solid #edf2f7',
-    },
-    statLabel: {
-        fontSize: '0.75rem',
-        color: '#718096',
-        display: 'block',
-        marginBottom: '0.3rem',
-    },
-    statValue: {
-        fontSize: '1.1rem',
-        fontWeight: '700',
-        color: '#2d3748',
-    },
-    actionSection: {
-        marginTop: '1.5rem',
-    },
-    quickDeposits: {
-        display: 'flex',
-        gap: '0.5rem',
-        flexWrap: 'wrap',
-        marginBottom: '1.5rem',
-        justifyContent: 'center'
-    },
-    quickBtn: {
-        padding: '0.6rem 1rem',
-        borderRadius: '12px',
-        border: '2px solid #edf2f7',
-        background: '#fff',
-        cursor: 'pointer',
-        fontWeight: '600',
-        transition: 'all 0.2s',
-    },
-    activeQuickBtn: {
-        background: '#f0f4ff',
-        borderColor: '#667eea',
-        color: '#667eea',
-    },
-    inputWrapper: {
-        position: 'relative',
-        marginBottom: '1.5rem',
-    },
-    input: {
-        width: '100%',
-        padding: '16px',
-        borderRadius: '15px',
-        border: '2px solid #edf2f7',
-        fontSize: '1.1rem',
-        outline: 'none',
-        boxSizing: 'border-box',
-        textAlign: 'center',
-        transition: 'border-color 0.2s',
-    },
-    buttonGroup: {
-        display: 'flex',
-        gap: '1rem',
-    },
-    primaryBtn: {
-        flex: 1,
-        padding: '16px',
-        borderRadius: '15px',
-        border: 'none',
-        background: '#667eea',
-        color: '#fff',
-        fontSize: '1rem',
-        fontWeight: '700',
-        cursor: 'pointer',
-        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-    },
-    secondaryBtn: {
-        flex: 1,
-        padding: '16px',
-        borderRadius: '15px',
-        border: '2px solid #e2e8f0',
-        background: '#fff',
-        color: '#4a5568',
-        fontSize: '1rem',
-        fontWeight: '700',
-        cursor: 'pointer',
-    }
-};
 
 const Wallet = ({ user, updateUser }) => {
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-    const netProfit = (user.totalWinnings || 0) - ((user.totalDeposited || 0) - (user.balance || 0));
+    useEffect(() => {
+        const handleResize = () => setScreenWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const isMobile = screenWidth < 600;
+    const isTablet = screenWidth >= 600 && screenWidth < 900;
+
+    const netProfit =
+        (user.totalWinnings || 0) -
+        ((user.totalDeposited || 0) - (user.balance || 0));
+
+    const quickAmounts = [100, 500, 1000, 2000];
+
+    const styles = {
+        container: {
+            maxWidth: isMobile ? '100%' : '900px',
+            margin: '0 auto',
+            padding: isMobile ? '15px' : '25px',
+        },
+        header: {
+            textAlign: 'center',
+            fontSize: isMobile ? '1.4rem' : isTablet ? '1.6rem' : '1.8rem',
+            marginBottom: '20px',
+            color: '#1a202c',
+        },
+        balanceCard: {
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: '#fff',
+            textAlign: 'center',
+            padding: isMobile ? '20px' : '30px',
+            borderRadius: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 10px 20px rgba(102,126,234,0.3)',
+        },
+        balanceLabel: {
+            fontSize: '0.9rem',
+            opacity: 0.9,
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+        },
+        balanceAmount: {
+            fontSize: isMobile ? '2rem' : '3rem',
+            fontWeight: '800',
+            margin: '0.5rem 0',
+        },
+        statsGrid: {
+            display: 'grid',
+            gridTemplateColumns: isMobile
+                ? '1fr 1fr'
+                : isTablet
+                    ? '1fr 1fr'
+                    : '1fr 1fr 1fr 1fr',
+            gap: '15px',
+            marginBottom: '20px',
+        },
+        statBox: {
+            background: '#f8fafc',
+            padding: '15px',
+            borderRadius: '15px',
+            textAlign: 'center',
+        },
+        statLabel: {
+            fontSize: '0.75rem',
+            color: '#718096',
+            marginBottom: '0.3rem',
+            display: 'block',
+        },
+        statValue: {
+            fontSize: '1.1rem',
+            fontWeight: '700',
+            color: '#2d3748',
+        },
+        green: { color: '#48bb78' },
+        red: { color: '#f56565' },
+        quickButtons: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '10px',
+            marginBottom: '15px',
+        },
+        quickBtn: {
+            padding: '10px 15px',
+            borderRadius: '10px',
+            border: '1px solid #ddd',
+            background: '#fff',
+            cursor: 'pointer',
+            fontWeight: '600',
+            transition: 'all 0.2s',
+        },
+        activeQuickBtn: {
+            background: '#667eea',
+            color: '#fff',
+            borderColor: '#667eea',
+        },
+        input: {
+            width: '100%',
+            padding: '15px',
+            borderRadius: '12px',
+            border: '1px solid #ddd',
+            textAlign: 'center',
+            marginBottom: '15px',
+            fontSize: '1rem',
+            outline: 'none',
+            boxSizing: 'border-box',
+        },
+        buttonGroup: {
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: '10px',
+        },
+        primaryBtn: {
+            flex: 1,
+            padding: '15px',
+            background: '#667eea',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: '700',
+        },
+        secondaryBtn: {
+            flex: 1,
+            padding: '15px',
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            background: '#fff',
+            cursor: 'pointer',
+            fontWeight: '700',
+        },
+        footer: {
+            textAlign: 'center',
+            fontSize: '12px',
+            marginTop: '15px',
+            color: 'gray',
+        },
+    };
 
     const handleTransaction = async (type) => {
         const val = parseInt(amount);
@@ -141,7 +154,7 @@ const Wallet = ({ user, updateUser }) => {
         }
 
         if (type === 'withdraw' && val > user.balance) {
-            alert('Insufficient balance for withdrawal');
+            alert('Insufficient balance');
             return;
         }
 
@@ -156,17 +169,15 @@ const Wallet = ({ user, updateUser }) => {
 
             const freshUser = await authAPI.me();
             updateUser(freshUser.data);
-            
+
             setAmount('');
-            alert(response.data.message || 'Transaction successful!');
+            alert(response.data.message || 'Transaction Successful!');
         } catch (error) {
-            alert(error.response?.data?.error || 'Transaction failed');
+            alert(error.response?.data?.error || 'Transaction Failed');
         } finally {
             setLoading(false);
         }
     };
-
-    const quickAmounts = [100, 500, 1000, 2000];
 
     return (
         <div style={styles.container}>
@@ -182,79 +193,87 @@ const Wallet = ({ user, updateUser }) => {
             <div style={styles.statsGrid}>
                 <div style={styles.statBox}>
                     <span style={styles.statLabel}>Lifetime Deposit</span>
-                    <span style={styles.statValue}>₹{user.totalDeposited?.toLocaleString() || 0}</span>
+                    <span style={styles.statValue}>
+                        ₹{user.totalDeposited?.toLocaleString() || 0}
+                    </span>
                 </div>
+
                 <div style={styles.statBox}>
                     <span style={styles.statLabel}>Total Winnings</span>
-                    <span style={{ ...styles.statValue, color: '#48bb78' }}>
+                    <span style={{ ...styles.statValue, ...styles.green }}>
                         ₹{user.totalWinnings?.toLocaleString() || 0}
                     </span>
                 </div>
+
                 <div style={styles.statBox}>
-                    <span style={styles.statLabel}>Win/Loss Ratio</span>
+                    <span style={styles.statLabel}>Win %</span>
                     <span style={styles.statValue}>
-                        {user.gamesPlayed > 0 ? ((user.gamesWon / user.gamesPlayed) * 100).toFixed(0) : 0}%
+                        {user.gamesPlayed > 0
+                            ? ((user.gamesWon / user.gamesPlayed) * 100).toFixed(0)
+                            : 0}
+                        %
                     </span>
                 </div>
+
                 <div style={styles.statBox}>
                     <span style={styles.statLabel}>Net Profit</span>
-                    <span style={{ 
-                        ...styles.statValue, 
-                        color: netProfit >= 0 ? '#48bb78' : '#f56565' 
-                    }}>
-                        {netProfit >= 0 ? '+' : ''}₹{netProfit.toLocaleString()}
+                    <span
+                        style={{
+                            ...styles.statValue,
+                            ...(netProfit >= 0 ? styles.green : styles.red),
+                        }}
+                    >
+                        {netProfit >= 0 ? '+' : ''}
+                        ₹{netProfit.toLocaleString()}
                     </span>
                 </div>
             </div>
 
-            <div style={styles.actionSection}>
-                <div style={styles.quickDeposits}>
-                    {quickAmounts.map(val => (
-                        <button
-                            key={val}
-                            onClick={() => setAmount(val.toString())}
-                            style={{
-                                ...styles.quickBtn,
-                                ...(amount === val.toString() ? styles.activeQuickBtn : {})
-                            }}
-                        >
-                            +₹{val}
-                        </button>
-                    ))}
-                </div>
-
-                <div style={styles.inputWrapper}>
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter custom amount"
-                        style={styles.input}
-                        min="10"
-                    />
-                </div>
-
-                <div style={styles.buttonGroup}>
+            <div style={styles.quickButtons}>
+                {quickAmounts.map((val) => (
                     <button
-                        onClick={() => handleTransaction('deposit')}
-                        style={{ ...styles.primaryBtn, opacity: loading ? 0.7 : 1 }}
-                        disabled={loading}
+                        key={val}
+                        onClick={() => setAmount(val.toString())}
+                        style={{
+                            ...styles.quickBtn,
+                            ...(amount === val.toString() ? styles.activeQuickBtn : {}),
+                        }}
                     >
-                        {loading && amount ? 'Processing...' : 'Deposit'}
+                        +₹{val}
                     </button>
-                    <button
-                        onClick={() => handleTransaction('withdraw')}
-                        style={{ ...styles.secondaryBtn, opacity: loading ? 0.7 : 1 }}
-                        disabled={loading || !user.balance || user.balance < 10}
-                    >
-                        Withdraw
-                    </button>
-                </div>
+                ))}
             </div>
-            
-            <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#a0aec0', marginTop: '1.5rem' }}>
-                Instant withdrawals to linked accounts. Minimum ₹10.
-            </p>
+
+            <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                style={styles.input}
+            />
+
+            <div style={styles.buttonGroup}>
+                <button
+                    style={{ ...styles.primaryBtn, opacity: loading ? 0.7 : 1 }}
+                    onClick={() => handleTransaction('deposit')}
+                    disabled={loading}
+                >
+                    {loading ? 'Processing...' : 'Deposit'}
+                </button>
+
+                <button
+                    style={{
+                        ...styles.secondaryBtn,
+                        opacity: loading || !user.balance ? 0.7 : 1,
+                    }}
+                    onClick={() => handleTransaction('withdraw')}
+                    disabled={loading || !user.balance}
+                >
+                    Withdraw
+                </button>
+            </div>
+
+            <p style={styles.footer}>Instant withdrawals. Minimum ₹10.</p>
         </div>
     );
 };
