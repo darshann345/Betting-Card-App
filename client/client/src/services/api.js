@@ -42,6 +42,7 @@ export const authAPI = {
 
 export const walletAPI = {
   deposit: (amount) => API.post("/wallet/deposit", { amount }),
+  withdraw: (amount)=> API.post("/wallet/withdraw", {amount})
 };
 
 export const gameAPI = {

@@ -43,7 +43,8 @@ router.get("/", auth, async (req, res) => {
       balance: req.user.balance,
       totalDeposited: req.user.totalDeposited,
       gamesPlayed: req.user.gamesPlayed,
-      totalWinnings: req.user.totalWinnings
+      totalWinnings: req.user.totalWinnings,
+      totalWithdrawn: req.user.totalWithdrawn
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch wallet information" });
@@ -77,13 +78,21 @@ router.post("/withdraw", auth, async (req, res) => {
     }
 
     
-    req.user.balance -= withdrawAmount;
+    console.log("Before Balance:", req.user.balance);
+console.log("Before Withdrawn:", req.user.totalWithdrawn);
 
-    await req.user.save();
+req.user.balance -= withdrawAmount;
+req.user.totalWithdrawn = (req.user.totalWithdrawn || 0) + withdrawAmount;
+
+await req.user.save();
+
+console.log("After Balance:", req.user.balance);
+console.log("After Withdrawn:", req.user.totalWithdrawn);
 
     res.json({
       message: `Withdrawal of ₹${withdrawAmount.toLocaleString()} successful!`,
       newBalance: req.user.balance,
+      totalWithdrawn: req.user.totalWithdrawn,
       transactionDate: new Date()
     });
 
