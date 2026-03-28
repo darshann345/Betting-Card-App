@@ -173,13 +173,8 @@ const Wallet = ({ user, updateUser }) => {
             setAmount('');
             alert(response.data.message || 'Transaction Successful!');
         } catch (error) {
-<<<<<<< HEAD
-            alert(error.response?.data?.error || 'Transaction Failed');
-=======
-            console.log(error.response?.data?.error);
 
             alert(error.response?.data?.error || 'Transaction failed');
->>>>>>> fa8bbd0 (comitted)
         } finally {
             setLoading(false);
         }
@@ -212,9 +207,6 @@ const Wallet = ({ user, updateUser }) => {
                 </div>
 
                 <div style={styles.statBox}>
-<<<<<<< HEAD
-                    <span style={styles.statLabel}>Win %</span>
-=======
                     <span style={styles.statLabel}>WithDrawn Amount</span>
                     <span style={{ ...styles.statValue, color: '#48bb78' }}>
                         ₹{user.totalWithdrawn?.toLocaleString() || 0}
@@ -222,7 +214,6 @@ const Wallet = ({ user, updateUser }) => {
                 </div>
                 <div style={styles.statBox}>
                     <span style={styles.statLabel}>Win/Loss Ratio</span>
->>>>>>> fa8bbd0 (comitted)
                     <span style={styles.statValue}>
                         {user.gamesPlayed > 0
                             ? ((user.gamesWon / user.gamesPlayed) * 100).toFixed(0)
