@@ -167,6 +167,7 @@ const AdminPanel = ({ user, updateUser }) => {
                             <tr>
                                 <th style={styles.th}>Username</th>
                                 <th style={styles.th}>Wallet</th>
+                                <th style = {styles.th}>Withdraw</th>
                                 <th style={styles.th}>Action</th>
                             </tr>
                         </thead>
@@ -175,6 +176,7 @@ const AdminPanel = ({ user, updateUser }) => {
                                 <tr key={u._id}>
                                     <td style={styles.td}>{u.username}</td>
                                     <td style={styles.td}>₹{u.balance.toLocaleString()}</td>
+                                    <td style = {styles.td}>₹{u.totalWithdrawn.toLocaleString()}</td>
                                     <td style={styles.td}>
                                         <button
                                             style={styles.button}
