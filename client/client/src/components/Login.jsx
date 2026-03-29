@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 
 const Login = ({ onLogin }) => {
-    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -20,6 +20,10 @@ const Login = ({ onLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isLogin && formData.password !== formData.confirmPassword) {
+    alert("Password doesn't match");
+    return; // ✅ stop here
+}
         setLoading(true);
 
         try {
@@ -141,6 +145,28 @@ const Login = ({ onLogin }) => {
                         style={styles.input}
                     />
                 </div>
+
+                {
+                    !isLogin ? (
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>Confirm Password</label>
+                            <input
+                                type="password"
+                                value={formData.confirmPassword}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, confirmPassword: e.target.value })
+                                }
+                                placeholder="Confirm Password"
+                                required
+                                disabled={loading}
+                                style={styles.input}
+                            />
+                        </div>
+
+                    ) : (
+                        ``
+                    )
+                }
 
                 <button
                     type="submit"

@@ -9,15 +9,24 @@ const router = express.Router();
 
 router.post("/signup", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, confirmPassword } = req.body;
+    
+
+
+    if (!username || !password || !confirmPassword) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Password Not Match" });
+    }
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ error: "Username already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       username,
@@ -59,6 +68,7 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: "Server error during registration" });
   }
 });
+
 
 
 router.post("/login", async (req, res) => {
