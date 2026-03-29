@@ -31,7 +31,7 @@ router.post("/signup", async (req, res) => {
     const user = new User({
       username,
       password: hashedPassword,
-      balance: 1000,
+      balance: 0,
       totalDeposited: 0,
       totalWithdrawn: 0,
       gamesPlayed: 0,

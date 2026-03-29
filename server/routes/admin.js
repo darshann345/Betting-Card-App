@@ -22,7 +22,8 @@ router.get("/stats", auth, adminAuth, async (req, res) => {
         $group: {
           _id: null,
           totalUserBalances: { $sum: "$balance" },
-          totalDeposited: { $sum: "$totalDeposited" }
+          totalDeposited: { $sum: "$totalDeposited" },
+          totalWithdrawn: { $sum: "$totalWithdrawn"}
         }
       }
     ]);

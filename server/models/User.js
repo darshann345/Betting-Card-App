@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    balance: { type: Number, default: 1000 },
+    balance: { type: Number, default: 0 },
     totalDeposited: { type: Number, default: 0 },
     totalWithdrawn: { type: Number, default: 0 },
     isAdmin: { type: Boolean, default: false },
